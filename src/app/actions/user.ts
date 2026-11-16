@@ -429,6 +429,13 @@ export async function getProfileData(username?: string) {
     if (!queryId) return null;
 
     return prisma.user.findUnique({
-        where: { id: queryId }
+        where: { id: queryId },
+        include: {
+            badges: {
+                include: {
+                    badge: true
+                }
+            }
+        }
     });
 }

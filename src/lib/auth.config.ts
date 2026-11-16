@@ -45,6 +45,9 @@ export default {
                 session.user.accountLabel = token.accountLabel;
                 session.user.birthDate = token.birthDate;
                 session.user.showSensitiveContent = token.showSensitiveContent;
+                session.user.isVerified = token.isVerified;
+                session.user.verificationType = token.verificationType;
+                session.user.badges = token.badges;
             }
             return session;
         },

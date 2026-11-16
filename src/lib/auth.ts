@@ -90,6 +90,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     where: {
                         OR: [{ email: login }, { username: login }],
                     },
+                    include: {
+                        badges: {
+                            include: {
+                                badge: true
+                            }
+                        }
+                    }
                 });
 
                 if (!user || !user.email) return null;
@@ -213,6 +220,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     countryCode: user.countryCode,
                     role: user.role,
                     isVerified: user.isVerified,
+                    verificationType: user.verificationType,
                     accountLabel: user.accountLabel,
                     coverImage: user.coverImage,
                     birthDate: user.birthDate,
@@ -230,7 +238,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             },
             async authorize(credentials) {
                 if (!credentials?.id || !credentials?.token) return null;
-                const user = await prisma.user.findUnique({ where: { id: credentials.id as string } });
+                const user = await prisma.user.findUnique({ 
+                    where: { id: credentials.id as string },
+                    include: { badges: { include: { badge: true } } }
+                });
                 if (!user) return null;
                 
                 const secret = process.env.AUTH_SECRET || "default_secret";
@@ -250,6 +261,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     countryCode: user.countryCode,
                     role: user.role,
                     isVerified: user.isVerified,
+                    verificationType: user.verificationType,
                     accountLabel: user.accountLabel,
                     coverImage: user.coverImage,
                     birthDate: user.birthDate,
@@ -271,6 +283,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 token.countryCode = user.countryCode;
                 token.role = user.role;
                 token.isVerified = user.isVerified;
+                token.verificationType = user.verificationType;
                 token.accountLabel = user.accountLabel;
                 token.coverImage = user.coverImage;
                 token.birthDate = user.birthDate;
@@ -293,6 +306,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                             showSensitiveContent: true, 
                             countryCode: true,
                             isVerified: true,
+                            verificationType: true,
                             badges: { include: { badge: true } }
                         }
                     });
@@ -308,6 +322,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                         token.showSensitiveContent = dbUser.showSensitiveContent;
                         token.countryCode = dbUser.countryCode;
                         token.isVerified = dbUser.isVerified;
+                        token.verificationType = dbUser.verificationType;
                         token.badges = dbUser.badges;
                     }
                 } catch (e) {

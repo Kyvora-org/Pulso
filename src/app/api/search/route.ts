@@ -69,7 +69,20 @@ export async function GET(req: NextRequest) {
                 NOT: { id: session.user.id },
             },
             take: 10,
-            select: { id: true, name: true, username: true, bio: true, avatar: true, isVerified: true },
+            select: { 
+                id: true, 
+                name: true, 
+                username: true, 
+                bio: true, 
+                avatar: true, 
+                isVerified: true, 
+                verificationType: true,
+                badges: {
+                    include: {
+                        badge: true
+                    }
+                }
+            },
         }),
         prisma.tweet.findMany({
             where: tweetWhere,

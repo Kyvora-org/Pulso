@@ -45,7 +45,7 @@ const TWEET_INCLUDE = {
             },
             quoteOf: {
                 include: {
-                    author: { select: { name: true, username: true, avatar: true } },
+                    author: { select: USER_SELECT },
                     images: { select: { url: true, type: true } }
                 }
             },
@@ -54,7 +54,7 @@ const TWEET_INCLUDE = {
     },
     quoteOf: {
         include: {
-            author: { select: { name: true, username: true, avatar: true } },
+            author: { select: USER_SELECT },
             images: { select: { url: true, type: true } }
         }
     },
@@ -121,6 +121,11 @@ export default async function ProfilePage({ params, searchParams }: { params: Pr
         where: { username: resolvedParams.username },
         include: {
             _count: { select: { followers: true, following: true, tweets: true } },
+            badges: {
+                include: {
+                    badge: true,
+                },
+            },
         },
     });
 

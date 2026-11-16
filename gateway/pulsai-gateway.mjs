@@ -5,11 +5,11 @@ const HOST = "127.0.0.1";
 const OLLAMA_URL = process.env.OLLAMA_INTERNAL_URL || "http://127.0.0.1:11434";
 const SECRET_TOKEN = process.env.PULSAI_GATEWAY_TOKEN || "b9798b3b4631b1a0eebb4dfa9694b94c5b243ea9f75e514093210af276317ce6";
 const TARGET_MODEL = process.env.OLLAMA_MODEL || "gemma4:e2b";
-const MAX_BODY_BYTES = 512 * 1024; // 512 KB
+const MAX_BODY_BYTES = 8 * 1024 * 1024; // 8 MB // 512 KB
 const TIMEOUT_MS = 180000; // 3 minutos
 
 let activeRequests = 0;
-const MAX_CONCURRENT = 3; // Permitir health check y streaming simultáneo
+const MAX_CONCURRENT = 10; // Permitir health check y streaming simultáneo
 
 const server = http.createServer((req, res) => {
     const url = new URL(req.url || "/", `http://${req.headers.host || "127.0.0.1"}`);
@@ -28,7 +28,7 @@ const server = http.createServer((req, res) => {
     // 2. Health check endpoint liviano (GET /api/health)
     if (req.method === "GET" && url.pathname === "/api/health") {
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 4000); // 4s timeout
+        const timeout = setTimeout(() => controller.abort(), 15000); // 4s timeout
 
         fetch(`${OLLAMA_URL}/api/tags`, { signal: controller.signal })
             .then(async (ollamaRes) => {

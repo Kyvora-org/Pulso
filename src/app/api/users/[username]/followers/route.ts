@@ -14,7 +14,15 @@ export async function GET(
                 }
             },
             include: {
-                follower: true
+                follower: {
+                    include: {
+                        badges: {
+                            include: {
+                                badge: true
+                            }
+                        }
+                    }
+                }
             }
         });
 

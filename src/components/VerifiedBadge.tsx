@@ -36,15 +36,25 @@ export function VerifiedBadge({ type, isVerified, size = 18, className = "", ani
         </svg>
       )}
       
-      {customBadges && customBadges.length > 0 && customBadges.map((ub: any) => ub.badge && (
-        <img 
-          key={ub.badge.id}
-          src={ub.badge.imageUrl} 
-          alt={ub.badge.name} 
-          title={ub.badge.name}
-          style={{ width: size, height: size, objectFit: 'contain', flexShrink: 0, marginLeft: computedType === "NONE" ? 4 : 0 }} 
-        />
-      ))}
+      {customBadges && customBadges.length > 0 && customBadges.map((ub: any, index: number) => {
+        const badgeObj = ub?.badge || ub;
+        if (!badgeObj?.imageUrl) return null;
+        return (
+          <img 
+            key={badgeObj.id || ub.id || index}
+            src={badgeObj.imageUrl} 
+            alt={badgeObj.name || "Insignia"} 
+            title={badgeObj.name || "Insignia"}
+            style={{ 
+              width: size, 
+              height: size, 
+              objectFit: 'contain', 
+              flexShrink: 0, 
+              marginLeft: computedType === "NONE" && index === 0 ? 4 : 2 
+            }} 
+          />
+        );
+      })}
     </span>
   );
 }

@@ -32,6 +32,12 @@ export async function GET(request: Request) {
                 image: true,
                 avatar: true,
                 isVerified: true,
+                verificationType: true,
+                badges: {
+                    include: {
+                        badge: true
+                    }
+                }
             }
         });
 
