@@ -10,7 +10,8 @@ interface VerifiedBadgeProps {
 }
 
 export function VerifiedBadge({ type, isVerified, size = 18, className = "", animate = true, customBadges = [] }: VerifiedBadgeProps) {
-  const computedType = isVerified && (!type || type === "NONE") ? "BLUE" : type || "NONE";
+  const hasVerification = Boolean(isVerified || (type && type !== "NONE"));
+  const computedType = hasVerification ? (type && type !== "NONE" ? type : "BLUE") : "NONE";
 
   const color = computedType === "GOLD" ? "#ffad00" : computedType === "GREY" ? "#829aab" : "#1d9bf0";
   
@@ -52,6 +53,9 @@ export function VerifiedBadge({ type, isVerified, size = 18, className = "", ani
               flexShrink: 0, 
               marginLeft: computedType === "NONE" && index === 0 ? 4 : 2 
             }} 
+            onError={(e) => {
+              (e.currentTarget as HTMLElement).style.display = 'none';
+            }}
           />
         );
       })}

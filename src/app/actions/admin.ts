@@ -128,11 +128,16 @@ export async function updateUserRole(userId: string, role: string) {
 export async function updateUserVerification(userId: string, isVerified: boolean, type: string) {
     await checkAdmin();
     try {
-        await prisma.user.update({
+        const user = await prisma.user.update({
             where: { id: userId },
             data: { isVerified, verificationType: type }
         });
+        if (user.username) {
+            revalidatePath(`/${user.username}`);
+        }
         revalidatePath("/admin");
+        revalidatePath("/admin-dashboard");
+        revalidatePath("/home");
         return { success: true };
     } catch (e) {
         console.error("Update user verification error:", e);

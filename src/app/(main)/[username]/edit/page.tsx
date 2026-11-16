@@ -81,7 +81,8 @@ export default function EditProfilePage() {
                     profileAudioTitle: data.profileAudioTitle || "",
                     profileAudioStart: data.profileAudioStart || 0,
                 }));
-                if (data.avatar) setAvatarPreview(data.avatar);
+                const avatar = data.avatar || data.image;
+                if (avatar) setAvatarPreview(avatar);
                 if (data.coverImage) setCoverPreview(data.coverImage);
             }
         }).catch(console.error);

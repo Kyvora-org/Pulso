@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 export async function POST(req: Request, { params }: { params: Promise<{ username: string }> }) {
     try {
@@ -9,10 +10,16 @@ export async function POST(req: Request, { params }: { params: Promise<{ usernam
 
         const { badgeId } = await req.json();
         const { username } = await params;
+        const cleanUsername = decodeURIComponent(username || "").replace(/^@/, "");
 
-        const user = await prisma.user.findUnique({
-            where: { username }
+        let user = await prisma.user.findUnique({
+            where: { username: cleanUsername }
         });
+        if (!user) {
+            user = await prisma.user.findFirst({
+                where: { username: { equals: cleanUsername, mode: "insensitive" } }
+            });
+        }
 
         if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
@@ -22,6 +29,12 @@ export async function POST(req: Request, { params }: { params: Promise<{ usernam
                 badgeId
             }
         });
+
+        if (user.username) {
+            revalidatePath(`/${user.username}`);
+        }
+        revalidatePath("/admin-dashboard");
+        revalidatePath("/home");
 
         return NextResponse.json(userBadge);
     } catch (e: any) {
@@ -40,12 +53,18 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ usern
         const url = new URL(req.url);
         const badgeId = url.searchParams.get("badgeId");
         const { username } = await params;
+        const cleanUsername = decodeURIComponent(username || "").replace(/^@/, "");
 
         if (!badgeId) return NextResponse.json({ error: "Missing badgeId" }, { status: 400 });
 
-        const user = await prisma.user.findUnique({
-            where: { username }
+        let user = await prisma.user.findUnique({
+            where: { username: cleanUsername }
         });
+        if (!user) {
+            user = await prisma.user.findFirst({
+                where: { username: { equals: cleanUsername, mode: "insensitive" } }
+            });
+        }
 
         if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
@@ -57,6 +76,12 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ usern
                 }
             }
         });
+
+        if (user.username) {
+            revalidatePath(`/${user.username}`);
+        }
+        revalidatePath("/admin-dashboard");
+        revalidatePath("/home");
 
         return NextResponse.json({ success: true });
     } catch (e) {

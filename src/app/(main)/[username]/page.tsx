@@ -65,10 +65,20 @@ import { ProfileContent } from "@/components/ProfileContent";
 
 export async function generateMetadata({ params }: { params: Promise<{ username: string }> }) {
     const resolvedParams = await params;
-    const user = await prisma.user.findUnique({
-        where: { username: resolvedParams.username },
+    const rawUsername = resolvedParams.username ? decodeURIComponent(resolvedParams.username) : "";
+    const cleanUsername = rawUsername.replace(/^@/, "");
+
+    let user = await prisma.user.findUnique({
+        where: { username: cleanUsername },
         select: { name: true, username: true, bio: true, avatar: true, image: true }
     });
+
+    if (!user) {
+        user = await prisma.user.findFirst({
+            where: { username: { equals: cleanUsername, mode: "insensitive" } },
+            select: { name: true, username: true, bio: true, avatar: true, image: true }
+        });
+    }
 
     if (!user) return { title: "Usuario no encontrado" };
 
@@ -117,8 +127,11 @@ export default async function ProfilePage({ params, searchParams }: { params: Pr
     const session = await auth();
     const currentUserId = session?.user?.id;
 
-    const user = await prisma.user.findUnique({
-        where: { username: resolvedParams.username },
+    const rawUsername = resolvedParams.username ? decodeURIComponent(resolvedParams.username) : "";
+    const cleanUsername = rawUsername.replace(/^@/, "");
+
+    let user = await prisma.user.findUnique({
+        where: { username: cleanUsername },
         include: {
             _count: { select: { followers: true, following: true, tweets: true } },
             badges: {
@@ -128,6 +141,20 @@ export default async function ProfilePage({ params, searchParams }: { params: Pr
             },
         },
     });
+
+    if (!user) {
+        user = await prisma.user.findFirst({
+            where: { username: { equals: cleanUsername, mode: "insensitive" } },
+            include: {
+                _count: { select: { followers: true, following: true, tweets: true } },
+                badges: {
+                    include: {
+                        badge: true,
+                    },
+                },
+            },
+        });
+    }
 
     if (!user) notFound();
 

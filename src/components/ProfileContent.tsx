@@ -207,7 +207,7 @@ export function ProfileContent({
                 <div>
                     <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
                         <h1>{user.name}</h1>
-                        <VerifiedBadge type={user.verificationType || (user.isVerified ? "BLUE" : "NONE")} size={20} className="mt-1" customBadges={user.badges} />
+                        <VerifiedBadge isVerified={user.isVerified} type={user.verificationType} size={20} className="mt-1" customBadges={user.badges} />
                     </div>
                     <div style={{ fontSize: "0.8rem", color: "var(--text-secondary)", fontWeight: 400 }}>
                         {user._count.tweets} {t("posts")}
@@ -340,7 +340,7 @@ export function ProfileContent({
 
                 <div className="profile-name" style={{ display: "flex", alignItems: "center", gap: 4 }}>
                     {user.name}
-                    <VerifiedBadge type={user.verificationType || (user.isVerified ? "BLUE" : "NONE")} size={20} customBadges={user.badges} />
+                    <VerifiedBadge isVerified={user.isVerified} type={user.verificationType} size={20} customBadges={user.badges} />
                     {user.accountLabel && (
                         <span style={{ 
                             background: "var(--bg-secondary)", 
@@ -356,6 +356,45 @@ export function ProfileContent({
                     )}
                 </div>
                 <div className="profile-handle">@{user.username}</div>
+
+                {/* Insignias oficiales del usuario en el perfil */}
+                {user.badges && user.badges.length > 0 && (
+                    <div style={{ marginTop: "10px", marginBottom: "4px", display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center" }}>
+                        {user.badges.map((ub: any, idx: number) => {
+                            const b = ub.badge || ub;
+                            if (!b) return null;
+                            return (
+                                <div 
+                                    key={b.id || ub.id || idx}
+                                    style={{
+                                        display: "inline-flex",
+                                        alignItems: "center",
+                                        gap: "6px",
+                                        padding: "4px 12px",
+                                        background: "color-mix(in srgb, var(--bg-secondary) 85%, transparent)",
+                                        border: "1px solid var(--border)",
+                                        borderRadius: "9999px",
+                                        fontSize: "0.82rem",
+                                        fontWeight: 600,
+                                        color: "var(--text-main)",
+                                        boxShadow: "0 1px 3px rgba(0,0,0,0.06)"
+                                    }}
+                                    title={b.description || b.name || "Insignia oficial"}
+                                >
+                                    {b.imageUrl && (
+                                        <img 
+                                            src={b.imageUrl} 
+                                            alt={b.name} 
+                                            style={{ width: 16, height: 16, objectFit: "contain" }} 
+                                            onError={(e) => { (e.currentTarget as HTMLElement).style.display = 'none'; }}
+                                        />
+                                    )}
+                                    <span>{b.name}</span>
+                                </div>
+                            );
+                        })}
+                    </div>
+                )}
                 {user.bio && (
                     <div style={{ marginTop: "12px", marginBottom: "4px" }}>
                         <PostContentTranslator content={user.bio} className="profile-bio" alwaysShowButton type="bio" />

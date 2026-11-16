@@ -222,7 +222,7 @@ export default function ExplorePage() {
                             <div className="user-result-info">
                                 <div className="user-result-name" style={{ display: "flex", alignItems: "center", gap: 4 }}>
                                     <span>{u.name}</span>
-                                    <VerifiedBadge type={u.verificationType || (u.isVerified ? "BLUE" : "NONE")} size={16} customBadges={u.badges} />
+                                    <VerifiedBadge isVerified={u.isVerified} type={u.verificationType} size={16} customBadges={u.badges} />
                                 </div>
                                 <div className="user-result-handle">@{u.username}</div>
                                 {u.bio && <div className="user-result-bio">{u.bio}</div>}

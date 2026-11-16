@@ -7,10 +7,11 @@ export async function GET(
 ) {
     try {
         const { username } = await params;
+        const cleanUsername = decodeURIComponent(username || "").replace(/^@/, "");
         const followers = await prisma.follow.findMany({
             where: {
                 following: {
-                    username: username
+                    username: { equals: cleanUsername, mode: "insensitive" }
                 }
             },
             include: {

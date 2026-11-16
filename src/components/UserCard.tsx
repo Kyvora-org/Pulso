@@ -36,7 +36,7 @@ export function UserCard({ user }: UserCardProps) {
                         <div style={{ minWidth: 0 }}>
                             <div style={{ fontWeight: 700, fontSize: "1rem", display: "flex", alignItems: "center", gap: 4, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                                 <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{user.name}</span>
-                                <VerifiedBadge type={user.verificationType || (user.isVerified ? "BLUE" : "NONE")} size={16} customBadges={user.badges} />
+                                <VerifiedBadge isVerified={user.isVerified} type={user.verificationType} size={16} customBadges={user.badges} />
                             </div>
                             <div style={{ color: "var(--text-secondary)", fontSize: "0.9rem", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>@{user.username}</div>
                         </div>

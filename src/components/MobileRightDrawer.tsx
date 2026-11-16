@@ -263,7 +263,7 @@ export function MobileRightDrawer() {
                                         textOverflow: "ellipsis"
                                     }}>
                                         {user?.name}
-                                        <VerifiedBadge type={user?.verificationType || (user?.isVerified ? "BLUE" : "NONE")} size={15} customBadges={user?.badges} />
+                                        <VerifiedBadge isVerified={user?.isVerified} type={user?.verificationType} size={15} customBadges={user?.badges} />
                                     </div>
                                     <div style={{ color: "var(--text-secondary)", fontSize: "0.85rem" }}>
                                         @{username}
