@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+
 interface AvatarProps {
     user?: { name?: string | null; image?: string | null; avatar?: string | null } | null;
     size?: "sm" | "md" | "lg" | "xl" | "2xl";
@@ -13,22 +17,29 @@ const sizeMap = {
 };
 
 export function Avatar({ user, size = "md", className = "" }: AvatarProps) {
+    const [failedSrc, setFailedSrc] = useState<string | null>(null);
     const sizeClass = sizeMap[size];
-    const src = (user as any)?.avatar || user?.image;
-    const letter = (user?.name || "?")[0].toUpperCase();
+    
+    const rawSrc = (user as any)?.avatar || user?.image;
+    const src = (rawSrc && typeof rawSrc === "string" && rawSrc !== "null" && rawSrc !== "undefined" && rawSrc.trim().length > 0)
+        ? rawSrc.trim()
+        : null;
 
-    // Debugging (optional, remove in production)
-    // console.log('Avatar debug:', { username: (user as any)?.username, src });
+    const letter = (user?.name || "?")[0]?.toUpperCase() || "?";
 
     const isGold = (user as any)?.verificationType === "GOLD";
     const shapeClass = isGold ? "avatar-square" : "";
 
-    if (src) {
+    const hasError = src ? failedSrc === src : true;
+
+    if (src && !hasError) {
         return (
             <img
+                key={src}
                 src={src}
                 alt={user?.name || "Avatar"}
                 className={`avatar ${sizeClass} ${shapeClass} ${className}`}
+                onError={() => setFailedSrc(src)}
             />
         );
     }

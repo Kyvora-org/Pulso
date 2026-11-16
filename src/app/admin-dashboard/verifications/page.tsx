@@ -4,7 +4,7 @@ import { VerificationManager } from "./VerificationManager";
 export default async function AdminVerificationsPage() {
     const requests = await prisma.verificationRequest.findMany({
         where: { status: "PENDING" },
-        include: { user: { select: { name: true, username: true, avatar: true } } },
+        include: { user: { select: { name: true, username: true, avatar: true, image: true } } },
         orderBy: { createdAt: "desc" }
     });
 

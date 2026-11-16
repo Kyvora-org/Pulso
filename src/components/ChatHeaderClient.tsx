@@ -9,7 +9,7 @@ import PusherClient from "pusher-js";
 import { sendCallNotification } from "@/app/actions/message";
 
 interface ChatHeaderClientProps {
-    partner: { id: string, name: string, username: string };
+    partner: { id: string, name: string, username: string, avatar?: string | null, image?: string | null };
     conversationId: string;
     userId: string;
 }
@@ -19,6 +19,13 @@ export function ChatHeaderClient({ partner, conversationId, userId }: ChatHeader
     const [isIncoming, setIsIncoming] = useState(false);
     const [isAudioOnly, setIsAudioOnly] = useState(false);
     const [callKey, setCallKey] = useState(0);
+    const [callerName, setCallerName] = useState(partner.name);
+    const [callerAvatar, setCallerAvatar] = useState((partner as any).avatar || (partner as any).image || null);
+
+    useEffect(() => {
+        setCallerName(partner.name);
+        setCallerAvatar((partner as any).avatar || (partner as any).image || null);
+    }, [partner]);
 
     useEffect(() => {
         const pusher = new PusherClient(process.env.NEXT_PUBLIC_PUSHER_APP_KEY!, {
@@ -31,6 +38,9 @@ export function ChatHeaderClient({ partner, conversationId, userId }: ChatHeader
             if (data.senderId !== userId) {
                 setIsIncoming(true);
                 setIsAudioOnly(data.isAudioOnly || false);
+                if (data.senderName) setCallerName(data.senderName);
+                if (data.senderAvatar) setCallerAvatar(data.senderAvatar);
+                else setCallerAvatar((partner as any).avatar || (partner as any).image || null);
                 setCallKey(prev => prev + 1); // Force remount
                 setIsCallOpen(true);
             }
@@ -88,7 +98,8 @@ export function ChatHeaderClient({ partner, conversationId, userId }: ChatHeader
                     onClose={() => setIsCallOpen(false)} 
                     isIncoming={isIncoming}
                     isAudioOnly={isAudioOnly}
-                    callerName={partner.name}
+                    callerName={callerName}
+                    callerAvatar={callerAvatar}
                     conversationId={conversationId}
                     userId={userId}
                 />

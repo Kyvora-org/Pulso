@@ -4,6 +4,7 @@ export const USER_SELECT = {
     username: true,
     bio: true,
     avatar: true,
+    image: true,
     coverImage: true,
     isVerified: true,
     verificationType: true,

@@ -3,10 +3,22 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { TweetCard } from "@/components/TweetCard";
+import { Avatar } from "@/components/Avatar";
+import { VerifiedBadge } from "@/components/VerifiedBadge";
 import { useSession } from "next-auth/react";
 import { useTranslation } from "@/lib/i18n";
 
-interface SearchUser { id: string; name: string; username: string; bio?: string; }
+interface SearchUser { 
+    id: string; 
+    name: string; 
+    username: string; 
+    bio?: string; 
+    avatar?: string; 
+    image?: string; 
+    isVerified?: boolean; 
+    verificationType?: string; 
+    badges?: any[]; 
+}
 interface SearchTweet { id: string; content: string; author: SearchUser; createdAt: string; likes: any[]; replies: any[]; retweets: any[]; images: { url: string }[]; _count: any; }
 
 export default function ExplorePage() {
@@ -206,9 +218,12 @@ export default function ExplorePage() {
                         <div className="empty-state"><h2>{t("noPeopleFound")}</h2><p>{t("tryDifferentSearch")}</p></div>
                     ) : users.map((u) => (
                         <div key={u.id} className="user-result-item" onClick={() => router.push(`/${u.username}`)}>
-                            <div className="avatar-placeholder avatar-lg">{u.name[0].toUpperCase()}</div>
+                            <Avatar user={u} size="lg" />
                             <div className="user-result-info">
-                                <div className="user-result-name">{u.name}</div>
+                                <div className="user-result-name" style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                                    <span>{u.name}</span>
+                                    <VerifiedBadge type={u.verificationType || (u.isVerified ? "BLUE" : "NONE")} size={16} customBadges={u.badges} />
+                                </div>
                                 <div className="user-result-handle">@{u.username}</div>
                                 {u.bio && <div className="user-result-bio">{u.bio}</div>}
                             </div>

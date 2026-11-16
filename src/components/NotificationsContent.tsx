@@ -6,6 +6,7 @@ import { pusherClient } from "@/lib/pusher-client";
 import Link from "next/link";
 import { useTranslation } from "@/lib/i18n";
 import { markNotificationsRead } from "@/app/actions/user";
+import { Avatar } from "@/components/Avatar";
 
 const icons: Record<string, React.ReactNode> = {
     like: (
@@ -100,8 +101,8 @@ export function NotificationsContent({ notifications: initialNotifications }: { 
                             {icons[n.type]}
                         </div>
                         <div className="notif-content">
-                            <div className="avatar-placeholder avatar-sm" style={{ marginBottom: 6 }}>
-                                {(n.actor?.name || "?")[0].toUpperCase()}
+                            <div style={{ marginBottom: 6 }}>
+                                <Avatar user={n.actor} size="sm" />
                             </div>
                             <div className="notif-text">{notifText(n)}</div>
                             {n.tweet && (

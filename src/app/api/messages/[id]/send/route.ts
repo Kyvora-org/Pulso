@@ -37,7 +37,7 @@ export async function POST(req: Request, context: any) {
                 type,
                 isEncrypted,
             },
-            include: { sender: { select: { id: true, name: true, avatar: true } } }
+            include: { sender: { select: { id: true, name: true, avatar: true, image: true } } }
         });
 
         // Restore conversation for any participant who deleted it

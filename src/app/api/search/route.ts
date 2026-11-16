@@ -75,6 +75,7 @@ export async function GET(req: NextRequest) {
                 username: true, 
                 bio: true, 
                 avatar: true, 
+                image: true,
                 isVerified: true, 
                 verificationType: true,
                 badges: {

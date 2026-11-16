@@ -16,7 +16,7 @@ export async function GET(req: Request, context: any) {
             where: { id: id },
             include: {
                 participants: {
-                    select: { id: true, name: true, username: true, avatar: true }
+                    select: { id: true, name: true, username: true, avatar: true, image: true }
                 },
                 messages: {
                     where: {
@@ -24,7 +24,7 @@ export async function GET(req: Request, context: any) {
                     },
                     orderBy: { createdAt: "asc" },
                     include: { 
-                        sender: { select: { id: true, name: true, avatar: true } },
+                        sender: { select: { id: true, name: true, avatar: true, image: true } },
                     },
                 },
             },

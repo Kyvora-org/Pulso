@@ -12,6 +12,7 @@ interface CallModalProps {
     isIncoming?: boolean;
     isAudioOnly?: boolean; // We will treat everything as audio only now
     callerName?: string;
+    callerAvatar?: string | null;
     conversationId: string;
     userId: string;
 }
@@ -75,11 +76,12 @@ class RingtonePlayer {
     }
 }
 
-export function CallModal({ isOpen, onClose, isIncoming = false, callerName = "Usuario", conversationId, userId }: CallModalProps) {
+export function CallModal({ isOpen, onClose, isIncoming = false, callerName = "Usuario", callerAvatar, conversationId, userId }: CallModalProps) {
     const { t } = useTranslation();
     const [status, setStatus] = useState<"idle" | "calling" | "connected" | "ended">(isIncoming ? "idle" : "calling");
     const [mounted, setMounted] = useState(false);
     const [callDuration, setCallDuration] = useState(0);
+    const [avatarError, setAvatarError] = useState(false);
     
     // Feature States
     const [isLocalReady, setIsLocalReady] = useState(false);
@@ -295,8 +297,17 @@ export function CallModal({ isOpen, onClose, isIncoming = false, callerName = "U
                 
                 {status !== "connected" && status !== "ended" && (
                     <div style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
-                        <div style={{ width: "100px", height: "100px", borderRadius: "50%", background: "linear-gradient(135deg, #00B4DB 0%, #0083B0 100%)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "3rem", color: "white", fontWeight: 800, boxShadow: "0 4px 20px rgba(0, 180, 219, 0.4)", animation: (status === "calling" || status === "idle") ? "livePulse 2s infinite" : "none" }}>
-                            {callerName[0].toUpperCase()}
+                        <div style={{ width: "100px", height: "100px", borderRadius: "50%", overflow: "hidden", background: "linear-gradient(135deg, #00B4DB 0%, #0083B0 100%)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "3rem", color: "white", fontWeight: 800, boxShadow: "0 4px 20px rgba(0, 180, 219, 0.4)", animation: (status === "calling" || status === "idle") ? "livePulse 2s infinite" : "none" }}>
+                            {callerAvatar && !avatarError ? (
+                                <img 
+                                    src={callerAvatar} 
+                                    alt={callerName} 
+                                    style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                                    onError={() => setAvatarError(true)} 
+                                />
+                            ) : (
+                                callerName[0]?.toUpperCase() || "?"
+                            )}
                         </div>
                         <div style={{ color: "white", fontSize: "1.4rem", fontWeight: 700, background: "rgba(255,255,255,0.08)", padding: "10px 24px", borderRadius: "30px", backdropFilter: "blur(4px)", marginTop: "20px" }}>
                             {status === "calling" 
@@ -347,8 +358,17 @@ export function CallModal({ isOpen, onClose, isIncoming = false, callerName = "U
 
                 {status === "connected" && (
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "24px" }}>
-                        <div style={{ width: "120px", height: "120px", borderRadius: "50%", background: "linear-gradient(135deg, #00B4DB 0%, #0083B0 100%)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "3.5rem", color: "white", fontWeight: 800, boxShadow: "0 4px 20px rgba(0, 180, 219, 0.4)" }}>
-                            {callerName[0].toUpperCase()}
+                        <div style={{ width: "120px", height: "120px", borderRadius: "50%", overflow: "hidden", background: "linear-gradient(135deg, #00B4DB 0%, #0083B0 100%)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "3.5rem", color: "white", fontWeight: 800, boxShadow: "0 4px 20px rgba(0, 180, 219, 0.4)" }}>
+                            {callerAvatar && !avatarError ? (
+                                <img 
+                                    src={callerAvatar} 
+                                    alt={callerName} 
+                                    style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                                    onError={() => setAvatarError(true)} 
+                                />
+                            ) : (
+                                callerName[0]?.toUpperCase() || "?"
+                            )}
                         </div>
                         <div style={{ color: "white", fontSize: "1.5rem", fontWeight: 700 }}>
                             {callerName}

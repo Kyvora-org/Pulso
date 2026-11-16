@@ -23,7 +23,7 @@ export default async function ConversationPage({ params }: { params: Promise<{ i
                 },
                 orderBy: { createdAt: "asc" },
                 include: { 
-                    sender: { select: { id: true, name: true, avatar: true } },
+                    sender: { select: { id: true, name: true, avatar: true, image: true } },
                     reactions: true
                 },
             },

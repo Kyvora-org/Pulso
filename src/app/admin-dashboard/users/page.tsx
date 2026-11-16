@@ -8,6 +8,7 @@ export default async function AdminUsersPage() {
             name: true,
             username: true,
             avatar: true,
+            image: true,
             role: true,
             isVerified: true,
             verificationType: true,

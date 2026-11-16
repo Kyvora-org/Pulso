@@ -29,7 +29,7 @@ export async function sendMessage(conversationId: string, content: string, type:
             audioUrl,
             isEncrypted,
         },
-        include: { sender: { select: { id: true, name: true, avatar: true, verificationType: true, isVerified: true } } }
+        include: { sender: { select: { id: true, name: true, avatar: true, image: true, verificationType: true, isVerified: true } } }
     });
 
     // Restore conversation for any participant who deleted it
@@ -238,8 +238,13 @@ export async function sendCallNotification(conversationId: string, isAudioOnly: 
     const session = await auth();
     if (!session?.user?.id) throw new Error("Unauthorized");
 
+    const sender = session.user as any;
+    const avatar = sender.avatar || sender.image || null;
+
     await pusherServer.trigger(`chat-${conversationId}`, "incoming-call", {
         senderId: session.user.id,
+        senderName: sender.name,
+        senderAvatar: avatar,
         isAudioOnly
     });
 

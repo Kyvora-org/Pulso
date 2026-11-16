@@ -17,7 +17,7 @@ export async function GET(req: Request) {
             },
             include: {
                 participants: {
-                    select: { id: true, name: true, username: true, avatar: true }
+                    select: { id: true, name: true, username: true, avatar: true, image: true }
                 },
                 messages: {
                     orderBy: { createdAt: "desc" },
