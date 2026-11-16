@@ -356,45 +356,6 @@ export function ProfileContent({
                     )}
                 </div>
                 <div className="profile-handle">@{user.username}</div>
-
-                {/* Insignias oficiales del usuario en el perfil */}
-                {user.badges && user.badges.length > 0 && (
-                    <div style={{ marginTop: "10px", marginBottom: "4px", display: "flex", flexWrap: "wrap", gap: "8px", alignItems: "center" }}>
-                        {user.badges.map((ub: any, idx: number) => {
-                            const b = ub.badge || ub;
-                            if (!b) return null;
-                            return (
-                                <div 
-                                    key={b.id || ub.id || idx}
-                                    style={{
-                                        display: "inline-flex",
-                                        alignItems: "center",
-                                        gap: "6px",
-                                        padding: "4px 12px",
-                                        background: "color-mix(in srgb, var(--bg-secondary) 85%, transparent)",
-                                        border: "1px solid var(--border)",
-                                        borderRadius: "9999px",
-                                        fontSize: "0.82rem",
-                                        fontWeight: 600,
-                                        color: "var(--text-main)",
-                                        boxShadow: "0 1px 3px rgba(0,0,0,0.06)"
-                                    }}
-                                    title={b.description || b.name || "Insignia oficial"}
-                                >
-                                    {b.imageUrl && (
-                                        <img 
-                                            src={b.imageUrl} 
-                                            alt={b.name} 
-                                            style={{ width: 16, height: 16, objectFit: "contain" }} 
-                                            onError={(e) => { (e.currentTarget as HTMLElement).style.display = 'none'; }}
-                                        />
-                                    )}
-                                    <span>{b.name}</span>
-                                </div>
-                            );
-                        })}
-                    </div>
-                )}
                 {user.bio && (
                     <div style={{ marginTop: "12px", marginBottom: "4px" }}>
                         <PostContentTranslator content={user.bio} className="profile-bio" alwaysShowButton type="bio" />
